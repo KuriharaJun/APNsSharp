@@ -23,10 +23,61 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
+using System.Collections.Generic;
+using APNsSharp.Payloads;
+using Xunit;
+
 namespace APNsSharp.Test.Payload
 {
     public class NotificationPayloadTest
     {
+        [Fact]
+        public void HasErrorAlertNull()
+        {
+            var payload = new NotificationPayload();
+            Assert.False(payload.HasError());
+        }
+
+        [Fact]
+        public void HasErrorAlertEmpty()
+        {
+            var payload = new NotificationPayload();
+            payload.Alert = new Dictionary<string, object>();
+            Assert.False(payload.HasError());
+        }
+
+        [Fact]
+        public void HasErrorAlertErrorKey()
+        {
+            var payload = new NotificationPayload();
+            payload.Alert = new Dictionary<string, object>{
+                {"error", "error"}
+            };
+
+            Assert.True(payload.HasError());
+        }
+
+        [Fact]
+        public void HasErrorAlertNoneError()
+        {
+            var payload = new NotificationPayload();
+            payload.Alert = new Dictionary<string, object>{
+                {"title", "title"}
+            };
+
+            Assert.False(payload.HasError());
+        }
+
+        [Fact]
+        public void HasErrorAlertErrorAndNoneError()
+        {
+            var payload = new NotificationPayload();
+            payload.Alert = new Dictionary<string, object>{
+                {"title", "title"},
+                {"error", "error"}
+            };
+
+            Assert.True(payload.HasError());
+        }
     }
 }

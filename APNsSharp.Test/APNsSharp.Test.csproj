@@ -15,4 +15,7 @@
   <ItemGroup>
     <Folder Include="Payload\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\APNsSharp\APNsSharp\APNsSharp.csproj" />
+  </ItemGroup>
 </Project>

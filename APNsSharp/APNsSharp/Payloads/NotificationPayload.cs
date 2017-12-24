@@ -23,8 +23,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace APNsSharp.Payloads
 {
@@ -110,5 +110,22 @@ namespace APNsSharp.Payloads
             set;
         }
 
+        /// <summary>
+        /// Hases the error.
+        /// </summary>
+        /// <returns><c>true</c>, if error was hased, <c>false</c> otherwise.</returns>
+        public bool HasError()
+        {
+            var alertError = Alert?.Keys.GroupJoin(NotificationPayload.alertKey, _ => _, _ => _, (arg1, arg2) => new
+            {
+                SettingKey = arg1,
+                Key = arg2
+            }).SelectMany(x => x.Key.DefaultIfEmpty(), (x, y) =>
+            {
+                return y;
+            }).Any(_ => string.IsNullOrEmpty(_));
+
+            return alertError.HasValue ? alertError.Value : false;
+        }
     }
 }
