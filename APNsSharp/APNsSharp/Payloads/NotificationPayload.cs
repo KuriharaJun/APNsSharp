@@ -38,7 +38,7 @@ namespace APNsSharp.Payloads
         /// <summary>
         /// Alertに設定可能なkey
         /// </summary>
-        private static readonly string[] alertKey = new string[] {
+        private static readonly string[] AlertKey = new string[] {
             "title",
             "body",
             "title-loc-key",
@@ -116,16 +116,13 @@ namespace APNsSharp.Payloads
         /// <returns><c>true</c>, if error was hased, <c>false</c> otherwise.</returns>
         public bool HasError()
         {
-            var alertError = Alert?.Keys.GroupJoin(NotificationPayload.alertKey, _ => _, _ => _, (arg1, arg2) => new
+            var alertError = Alert?.Keys.GroupJoin(AlertKey, _ => _, _ => _, (arg1, arg2) => new
             {
                 SettingKey = arg1,
                 Key = arg2
-            }).SelectMany(x => x.Key.DefaultIfEmpty(), (x, y) =>
-            {
-                return y;
-            }).Any(_ => string.IsNullOrEmpty(_));
+            }).SelectMany(x => x.Key.DefaultIfEmpty(), (x, y) => y).Any(string.IsNullOrEmpty);
 
-            return alertError.HasValue ? alertError.Value : false;
+            return alertError ?? false;
         }
     }
 }
